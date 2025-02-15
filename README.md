@@ -52,5 +52,7 @@ python manage.py runserver
 | `/delete_consultation/<int:id>` | POST   | Delete a consultation record                                    |
 | `/public_consultation/<int:id>` | GET    | View a public consultation if the patient has an active payment |
 
-
+## Observations
+- IDE used: <a href="https://code.visualstudio.com/download">Visual Studio Code</a>.
+- Database viewer used: <a href="https://github.com/qwtel/sqlite-viewer-vscode">SQLite Viwer for VS Code</a>.
 
