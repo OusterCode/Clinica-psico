@@ -1,0 +1,14 @@
+Django>=4.2
+djangorestframework
+Pillow
+django-crispy-forms
+django-widget-tweaks
+psycopg2-binary
+python-dotenv
+gunicorn
+whitenoise
+django-cors-headers
+dotenv
+mysqlclient
+requests
+# For development purposes

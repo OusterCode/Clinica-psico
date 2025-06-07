@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block 'body' %}
+    <div class="relative isolate">
+        <svg class="pointer-events-none -z-50  absolute inset-x-0 top-0 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]" aria-hidden="true">
+        <defs>
+            <pattern id="1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84" width="200" height="200" x="50%" y="-1" patternUnits="userSpaceOnUse">
+            <path d="M.5 200V.5H200" fill="none" />
+            </pattern>
+        </defs>
+        <svg x="50%" y="-1" class="overflow-visible fill-gray-50">
+            <path d="M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z" stroke-width="0" />
+        </svg>
+        <rect width="100%" height="100%" stroke-width="0" fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)" />
+        </svg>
+        <div class="pointer-events-none absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu overflow-hidden blur-3xl lg:ml-24 xl:ml-48" aria-hidden="true">
+            <div class="aspect-[801/1036] w-[50.0625rem] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30" style="clip-path: polygon(63.1% 29.5%, 100% 17.1%, 76.6% 3%, 48.4% 0%, 44.6% 4.7%, 54.5% 25.3%, 59.8% 49%, 55.2% 57.8%, 44.4% 57.2%, 27.8% 47.9%, 35.1% 81.5%, 0% 97.7%, 39.2% 100%, 35.2% 81.4%, 97.2% 52.8%, 63.1% 29.5%)"></div>
+        </div>
+    
+
+    <div class="py-24 sm:py-32">
+        <div class="mx-auto grid max-w-7xl gap-20 px-6 lg:px-8 xl:grid-cols-3">
+          <div class="max-w-xl">
+           
+            <h2 class="text-pretty text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Cadastrar pacientes</h2>
+            <p class="mt-2 text-sm text-gray-500">Campos marcados com <span class="font-bold text-red-600">*</span> são obrigatórios.</p>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="rounded-md {{message.tags}} p-4">
+                        <div class="flex">
+                    
+                        <div class="ml-3">
+                            {{message}}
+                        </div>
+                        </div>
+                    </div>
+                <br>
+                {% endfor %}
+            {% endif %}
+            
+            <form action="{% url 'patients' %}" method="POST" enctype='multipart/form-data'> {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="grid grid-cols-1 gap-2">
+                    {% for field in form.visible_fields %}
+                        <label for="{{ field.id_for_label }}" class="block mt-2 text-sm/6 font-medium text-gray-600">
+                            {{ field.label }}{% if field.field.required %}<span class="font-bold text-red-600">*</span>{% endif %}
+                        </label>
+                        <div class="mt-2">
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-red-600 text-xs">{{ field.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+                        <style>
+                            input, select, textarea {
+                                background-color: #f3f4f6 !important; /* Tailwind bg-gray-100 */
+                                border: 1px solid #d1d5db !important; /* Tailwind border-gray-300 */
+                                color: #111827 !important; /* Tailwind text-gray-900 */
+                            }
+                            input:focus, select:focus, textarea:focus {
+                                outline: 2px solid #6366f1 !important; /* Tailwind focus:outline-indigo-600 */
+                                background-color: #fff !important;
+                            }
+                        </style>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="inline-flex justify-center rounded-md bg-indigo-600 mt-4 cursor-pointer px-3 py-2 w-full text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Registrar paciente</button>
+            </form>
+        </div>
+        
+          <ul role="list" class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
+       
+            {% for patient in patients %}
+                <li>
+                    <div class="flex items-center gap-x-6">
+                        <img class="size-16 rounded-full" src="{{ patient.get_photo_url }}" alt="">
+                        <div>
+                            <a href="{% url 'patient_view' patient.id %}" class="text-base/7 font-semibold tracking-tight text-gray-900">{{patient.name}}</a>
+                            <p class="text-sm/6 font-semibold text-indigo-600">{{patient.complaint}}</p>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        
+            
+  
+          </ul>
+        </div>
+      </div>
+      
+    </div>
+
+
+<script>
+function maskPhone(input) {
+    let value = input.value.replace(/\D/g, '');
+    if (value.length > 11) value = value.slice(0, 11);
+    if (value.length > 10) {
+        value = value.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+    } else if (value.length > 6) {
+        value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+    } else if (value.length > 2) {
+        value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+    } else {
+        value = value.replace(/^(\d*)/, '($1');
+    }
+    input.value = value.trim();
+}
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cepInput = document.getElementById('CEP');
+    if (cepInput) {
+        cepInput.addEventListener('input', function() {
+            let cep = cepInput.value.replace(/\D/g, '');
+            if (cep.length === 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            if(document.getElementById('address')) document.getElementById('address').value = data.logradouro || '';
+                            if(document.getElementById('city')) document.getElementById('city').value = data.localidade || '';
+                            if(document.getElementById('state')) document.getElementById('state').value = data.uf || '';
+                        }
+                    });
+            }
+        });
+    }
+});
+</script>
+
+{% endblock 'body' %}

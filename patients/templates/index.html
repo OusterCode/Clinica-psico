@@ -1,0 +1,42 @@
+<!-- filepath: templates/index.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psico Clínica - Sistema de Gestão</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-50">
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <img class="h-10 w-auto" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600" alt="Logo Psico Clínica">
+                <span class="text-2xl font-bold text-indigo-700">Psico Clínica</span>
+            </div>
+            <nav>
+                <a href="{% url 'patients' %}" class="text-indigo-600 hover:text-indigo-800 font-semibold">Acessar Sistema</a>
+            </nav>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto mt-16 p-8 bg-white rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">Bem-vindo ao Sistema de Gestão de Pacientes</h1>
+        <p class="text-lg text-gray-700 mb-8">Gerencie pacientes, consultas, tarefas e registros de forma simples e eficiente.</p>
+        <h2 class="text-2xl font-semibold text-indigo-700 mb-4">Funcionalidades principais</h2>
+        <ul class="list-disc pl-6 text-gray-800 space-y-2 mb-8">
+            <li>Cadastro e gerenciamento de pacientes com foto de perfil</li>
+            <li>Registro de consultas com acompanhamento de humor e vídeo</li>
+            <li>Geração de links públicos para consultas específicas</li>
+            <li>Atribuição e acompanhamento de tarefas para cada paciente</li>
+            <li>Visualização de histórico de consultas e ausências</li>
+            <li>Controle de status de pagamento do paciente</li>
+        </ul>
+        <div class="flex gap-4">
+            <a href="{% url 'patients' %}" class="bg-indigo-600 text-white px-6 py-3 rounded-md font-semibold shadow hover:bg-indigo-700 transition">Começar agora</a>
+        </div>
+    </main>
+    <footer class="mt-16 text-center text-gray-400 text-sm py-4">
+        &copy; 2025 Psico Clínica. Todos os direitos reservados.
+    </footer>
+</body>
+</html>

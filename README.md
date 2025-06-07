@@ -1,58 +1,59 @@
-# Management System
+# Sistema de Gestão de Clínica Psicológica
 
-## Overview
+## Visão Geral
 
-Management System is a web application designed to facilitate the management of a psychology clinic. The system allows psychologists to register patients, track consultations, manage tasks, and store relevant patient data efficiently.
+O Sistema de Gestão é uma aplicação web desenvolvida para facilitar o gerenciamento de uma clínica de psicologia. O sistema permite que psicólogos cadastrem pacientes, registrem consultas, gerenciem tarefas e armazenem dados relevantes de forma eficiente.
 
-## Features
+## Funcionalidades
 
-- **Patient Management:** Add, update, and view patient details, including contact information, complaints, and payment status.
-- **Consultation Records:** Log consultations with details such as mood assessment, general notes, and video recordings.
-- **Task Management:** Assign specific tasks to patients with predefined frequency options.
-- **Data Visualization:** Generate mood trend charts based on past consultations.
-- **Secure Access:** Ensure consultations are only accessible to paying patients.
+- **Gestão de Pacientes:** Adicione, atualize e visualize detalhes dos pacientes, incluindo informações de contato, queixas e status de pagamento.
+- **Registro de Consultas:** Registre consultas com detalhes como avaliação de humor, anotações gerais e vídeos.
+- **Gestão de Tarefas:** Atribua tarefas específicas aos pacientes com opções de frequência pré-definidas.
+- **Visualização de Dados:** Gere gráficos de tendência de humor com base nas consultas anteriores.
+- **Acesso Seguro:** As consultas só ficam acessíveis para pacientes com pagamento em dia.
 
-## Technologies Used
+## Tecnologias Utilizadas
 
 - **Backend:** Django (Python)
-- **Database:** SQLite (or configurable to PostgreSQL/MySQL)
-- **Frontend:** HTML, CSS (Django templates)
-- **Image Processing:** Pillow
-- **Other Libraries:** Django Messages Framework
+- **Banco de Dados:** SQLite (padrão, mas pode ser configurado para PostgreSQL/MySQL)
+- **Frontend:** HTML, CSS (templates Django, Tailwind)
+- **Processamento de Imagens:** Pillow
+- **Outras Bibliotecas:** Django Messages Framework
 
-## Installation
+## Instalação
 
-### Clone the Repository
+### Clone o Repositório
 
 ```sh
 git clone https://github.com/yourusername/management-system.git
 cd management-system
 ```
 
-### Start the Server
+### Inicie o Servidor
 
 ```sh
 python manage.py runserver
 ```
 
-## Usage
+## Como Usar
 
-- Navigate to `http://127.0.0.1:8000/` to access the patient management interface.
-- Register new patients by providing their details and a profile photo.
-- Add consultation records with mood tracking and video attachments.
-- Assign and manage tasks for each patient.
+- Acesse `http://127.0.0.1:8000/` para utilizar a interface de gestão de pacientes.
+- Cadastre novos pacientes informando seus dados e foto de perfil.
+- Registre consultas com avaliação de humor e vídeo.
+- Atribua e gerencie tarefas para cada paciente.
 
-## API Endpoints
+## Endpoints da Aplicação
 
-| Endpoint                        | Method | Description                                                     |
-| ------------------------------- | ------ | --------------------------------------------------------------- |
-| `/`                             | GET    | View all patients                                               |
-| `/<int:id>`                     | GET    | View a specific patient’s details                               |
-| `/update_patient/<int:id>`      | POST   | Update a patient's payment status                               |
-| `/delete_consultation/<int:id>` | POST   | Delete a consultation record                                    |
-| `/public_consultation/<int:id>` | GET    | View a public consultation if the patient has an active payment |
+| Endpoint                        | Método | Descrição                                                        |
+| ------------------------------- | ------ | ---------------------------------------------------------------- |
+| `/`                             | GET    | Visualizar todos os pacientes                                    |
+| `/<int:id>`                     | GET    | Visualizar detalhes de um paciente específico                    |
+| `/update_patient/<int:id>`      | POST   | Atualizar status de pagamento do paciente                        |
+| `/delete_consultation/<int:id>` | POST   | Excluir um registro de consulta                                  |
+| `/public_consultation/<int:id>` | GET    | Visualizar consulta pública se o paciente estiver em dia         |
 
-## Observations
-- IDE used: <a href="https://code.visualstudio.com/download">Visual Studio Code</a>.
-- Database viewer used: <a href="https://github.com/qwtel/sqlite-viewer-vscode">SQLite Viwer for VS Code</a>.
+## Observações
+
+- IDE utilizada: Visual Studio Code ([baixar Visual Studio Code](https://code.visualstudio.com/download))
+- Visualizador de banco de dados: SQLite Viewer para VS Code ([acessar SQLite Viewer para VS Code](https://github.com/qwtel/sqlite-viewer-vscode))
 
