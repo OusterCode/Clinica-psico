@@ -56,4 +56,5 @@ python manage.py runserver
 
 - IDE utilizada: Visual Studio Code ([baixar Visual Studio Code](https://code.visualstudio.com/download))
 - Visualizador de banco de dados: SQLite Viewer para VS Code ([acessar SQLite Viewer para VS Code](https://github.com/qwtel/sqlite-viewer-vscode))
+- Livremente baseado em https://github.com/JustAnotherBitt/Management-System
 
