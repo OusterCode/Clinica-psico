@@ -1,3 +1,4 @@
+{% load static %}
 <!-- filepath: templates/index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -11,11 +12,11 @@
     <header class="bg-white shadow">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <img class="h-10 w-auto" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600" alt="Logo Psico Clínica">
+                <img class="h-10 w-auto" src="/static/clinic_manager.png" alt="Logo Psico Clínica">
                 <span class="text-2xl font-bold text-indigo-700">Psico Clínica</span>
             </div>
             <nav>
-                <a href="{% url 'patients' %}" class="text-indigo-600 hover:text-indigo-800 font-semibold">Acessar Sistema</a>
+                <a href="{% url 'login' %}" class="text-indigo-600 hover:text-indigo-800 font-semibold">Acessar Sistema</a>
             </nav>
         </div>
     </header>
@@ -32,7 +33,7 @@
             <li>Controle de status de pagamento do paciente</li>
         </ul>
         <div class="flex gap-4">
-            <a href="{% url 'patients' %}" class="bg-indigo-600 text-white px-6 py-3 rounded-md font-semibold shadow hover:bg-indigo-700 transition">Começar agora</a>
+            <a href="{% url 'login' %}" class="bg-indigo-600 text-white px-6 py-3 rounded-md font-semibold shadow hover:bg-indigo-700 transition">Começar agora</a>
         </div>
     </main>
     <footer class="mt-16 text-center text-gray-400 text-sm py-4">

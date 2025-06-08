@@ -6,6 +6,7 @@ from core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('patients/', include('patients.urls')),
+    path('app_clinica/', include('app_clinica.urls')),
     path('', views.index, name='index'),
+    path('welcome/', views.welcome, name='welcome'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block body %}
+{% if not user.is_authenticated %}
+<div class="text-center text-red-600 font-bold mt-10">Acesso restrito. Faça login para visualizar esta página.</div>
+{% else %}
+<div class="max-w-7xl mx-auto mt-10 px-6">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Lista de Pacientes</h2>
+    <ul role="list" class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:grid-cols-3">
+        {% for patient in patients %}
+            <li>
+                <div class="flex items-center gap-x-6">
+                    <img class="size-16 rounded-full" src="{{ patient.get_photo_url }}" alt="Foto de {{patient.name}}" onerror="this.src='/media/pessoa_logo.jpeg';">
+                    <div>
+                        <a href="{% url 'patient_view' patient.id %}" class="text-base/7 font-semibold tracking-tight text-gray-900">{{patient.name}}</a>
+                        <p class="text-sm/6 font-semibold text-indigo-600">{{patient.treatment}}</p>
+                    </div>
+                </div>
+            </li>
+        {% empty %}
+            <li class="text-gray-500">Nenhum paciente cadastrado.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock body %}

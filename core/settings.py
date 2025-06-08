@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'patients'
+    'app_clinica.apps.AppClinicaConfig'
 ]
 
 MIDDLEWARE = [
@@ -59,7 +59,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates', BASE_DIR / 'app_clinica' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.tz',
             ],
         },
     },
@@ -126,12 +127,21 @@ USE_TZ = True
 
 import os
 
+if DEBUG:
+    STATICFILES_DIRS = []  # Fixed: does not point to a nonexistent folder
+else:
+    STATIC_URL = 'https://cdn.example.com/static/'  # Replace with your CDN URL
+    STATICFILES_DIRS = []  # Corrigido: não aponta para pasta inexistente
 STATIC_URL = '/static/'
-STATICFILES_DIRS = []  # Corrigido: não aponta para pasta inexistente
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL is the base URL for serving media files uploaded by users.
 MEDIA_URL = '/media/'
+
+# Ensure MEDIA_ROOT exists and is writable
+if not os.path.exists(MEDIA_ROOT):
+    os.makedirs(MEDIA_ROOT, exist_ok=True)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -144,3 +154,5 @@ MESSAGE_TAGS = {
     constants.SUCCESS: 'bg-green-50 text-green-700',
     constants.ERROR: 'bg-red-50 text-red-700',
 }
+
+LOGIN_URL = '/app_clinica/login/'

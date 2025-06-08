@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block body %}
+<!-- Background SVG (apenas um, simplificado) -->
+<svg class="pointer-events-none -z-50 absolute inset-x-0 top-0 h-[32rem] w-full stroke-gray-200" aria-hidden="true">
+    <defs>
+        <pattern id="background-pattern" width="200" height="200" x="50%" y="-1" patternUnits="userSpaceOnUse">
+            <path d="M.5 200V.5H200" fill="none" />
+        </pattern>
+    </defs>
+    <rect width="100%" height="100%" stroke-width="0" fill="url(#background-pattern)" />
+</svg>
+<div class="pointer-events-none absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu overflow-hidden blur-3xl lg:ml-24 xl:ml-48" aria-hidden="true">
+    <div class="aspect-[801/1036] w-[50.0625rem] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 clip-path-style"></div>
+</div>
+
+<div class="py-24 sm:py-32">
+    <div class="mx-auto grid max-w-7xl gap-20 px-6 lg:px-8 xl:grid-cols-3">
+        <div class="w-full xl:col-span-2 bg-white rounded-lg shadow p-8">
+            <h2 class="text-pretty text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Cadastrar Terapeuta</h2>
+            <p class="mt-2 text-sm text-gray-500">Campos marcados com <span class="font-bold text-red-600">*</span> são obrigatórios.</p>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="rounded-md {{message.tags}} p-4 flex items-center gap-2">
+                        {% if 'green' in message.tags %}
+                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        {% else %}
+                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        {% endif %}
+                        <span class="ml-3">{{message}}</span>
+                    </div>
+                    <br>
+                {% endfor %}
+            {% endif %}
+            <form action="{% url 'cadastrar_terapeuta' %}" method="POST" enctype="multipart/form-data" aria-label="Formulário de cadastro de terapeuta">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-4">
+                    {% for field in form.visible_fields %}
+                        <div>
+                            <label for="{{ field.id_for_label }}" class="block mt-2 text-sm/6 font-medium text-gray-600">
+                                {{ field.label }}{% if field.field.required %}<span class="font-bold text-red-600">*</span>{% endif %}
+                            </label>
+                            <div class="mt-2">
+                                {{ field }}
+                                {% if field.errors %}
+                                    <div class="text-red-600 text-xs">{{ field.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="inline-flex justify-center rounded-md bg-indigo-600 mt-8 cursor-pointer px-3 py-2 w-full text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" aria-label="Cadastrar terapeuta">Cadastrar terapeuta</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+  input, select, textarea {
+    background-color: #f3f4f6 !important; /* Tailwind bg-gray-100 */
+    border: 1px solid #d1d5db !important; /* Tailwind border-gray-300 */
+    color: #111827 !important; /* Tailwind text-gray-900 */
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: 2px solid #6366f1 !important; /* Tailwind focus:outline-indigo-600 */
+    background-color: #fff !important;
+  }
+</style>
+<script>
+// Máscara de telefone (opcional, pode ser removido se não quiser duplicidade)
+function maskPhone(input) {
+    let value = input.value.replace(/\D/g, '');
+    if (value.length > 11) value = value.slice(0, 11);
+    if (value.length > 10) {
+        value = value.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+    } else if (value.length > 6) {
+        value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+    } else if (value.length > 2) {
+        value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+    } else {
+        value = value.replace(/^(\d*)/, '($1');
+    }
+    input.value = value.trim();
+}
+// Preenchimento automático de endereço pelo CEP (igual ao paciente)
+window.addEventListener('DOMContentLoaded', function() {
+    const cepInput = document.getElementById('CEP');
+    if (cepInput) {
+        cepInput.addEventListener('input', function() {
+            let cep = cepInput.value.replace(/\D/g, '');
+            if (cep.length === 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            if(document.getElementById('address')) document.getElementById('address').value = data.logradouro || '';
+                            if(document.getElementById('city')) document.getElementById('city').value = data.localidade || '';
+                            if(document.getElementById('state')) document.getElementById('state').value = data.uf || '';
+                        }
+                    });
+            }
+        });
+    }
+});
+</script>
+{% endblock body %}
