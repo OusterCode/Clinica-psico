@@ -29,7 +29,7 @@ SECRET_KEY = SECRET_KEY = os.environ.get('SECRET_KEY_HERE')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['appclinica.azurewebsites.net']
+ALLOWED_HOSTS = ['appclinica.azurewebsites.net', 'appclinica-amgmeabyhyfehhbp.brazilsouth-01.azurewebsites.net']
 
 
 # Application definition
