@@ -1,7 +1,10 @@
 from django.db import models
-from django.urls import reverse
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
+
+# =========================
+# Modelos Abstratos
+# =========================
 
 class AbstractPerson(models.Model):
     name = models.CharField(max_length=255)
@@ -18,6 +21,10 @@ class AbstractPerson(models.Model):
 
     class Meta:
         abstract = True
+
+# =========================
+# Choices e Modelos Auxiliares
+# =========================
 
 TREATMENT_CHOICES = [
     ('ADHD', 'ADHD'),
@@ -39,11 +46,16 @@ class Treatment(models.Model):
     def __str__(self):
         return self.description
 
+# Popula tratamentos após migração
 @receiver(post_migrate)
 def populate_treatments(sender, **kwargs):
     if sender.name.endswith('app_clinica'):
         for code, desc in TREATMENT_CHOICES:
             Treatment.objects.get_or_create(code=code, description=desc)
+
+# =========================
+# Modelos Principais
+# =========================
 
 class Patients(AbstractPerson):
     treatment = models.ForeignKey(Treatment, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Tratamento')
@@ -73,39 +85,14 @@ class Therapist(AbstractPerson):
             return self.photo.url
         return '/media/pessoa_logo.jpeg'
 
-class Tasks(models.Model):
-    frequence_choices = (
-        ('D', 'Diário'),
-        ('1S', '1 vez por semana'),
-        ('2S', '2 vezes por semana'),
-        ('3S', '3 vezes por semana'),
-        ('1M', '1 vez por mês'),
-        ('2M', '2 vezes por mês'),
-        ('N', 'Quando necessário')
-    )
-
-    task = models.CharField(max_length=255)
-    instructions = models.TextField()
-    frequence = models.CharField(max_length=2, choices=frequence_choices, default='1S')
+class Agendamento(models.Model):
+    data = models.DateField()
+    hora = models.TimeField()
+    terapeuta = models.ForeignKey('Therapist', on_delete=models.CASCADE)
+    paciente = models.ForeignKey('Patients', on_delete=models.CASCADE)
+    observacoes = models.TextField(blank=True)
+    cor = models.CharField(max_length=7, default="#4285F4")  # cor HEX para o terapeuta
+    duracao = models.PositiveIntegerField(default=50, verbose_name='Duração da sessão (minutos)')
 
     def __str__(self):
-        return self.task
-
-class Consultations(models.Model):
-    mood = models.PositiveIntegerField()
-    general_registration = models.TextField()
-    video = models.FileField(upload_to="video")
-    tasks = models.ManyToManyField(Tasks)
-    patient = models.ForeignKey(Patients, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
-    valor_da_sessao = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-
-    def __str__(self):
-        return self.patient.name
-
-    @property
-    def public_link(self):
-        return f"http://127.0.0.1:8000{reverse('public_consultation', kwargs={'id': self.id})}"
-
-
-
+        return f"{self.data} {self.hora} - {self.paciente.name} ({self.terapeuta.name})"

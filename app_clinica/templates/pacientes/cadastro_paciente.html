@@ -33,7 +33,7 @@
                 {% endfor %}
             {% endif %}
             {% comment %} Lista de ordem dos campos para o formulário {% endcomment %}
-            <form action="{% url 'patients' %}" method="POST" enctype='multipart/form-data' aria-label="Formulário de cadastro de paciente">
+            <form action="{% url 'cadastrar_paciente' %}" method="POST" enctype='multipart/form-data' aria-label="Formulário de cadastro de paciente">
                 {% csrf_token %}
                 {{ form.non_field_errors }}
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-4">

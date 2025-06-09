@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="max-w-5xl mx-auto py-10">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">Visualização de Terapeutas</h2>
+        <a href="{% url 'cadastrar_terapeuta' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700 font-semibold text-sm">
+            + Novo Terapeuta
+        </a>
+    </div>
+    <form method="get" class="mb-6">
+        <div class="flex gap-2 items-center">
+            <input type="text" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Buscar por nome ou CPF" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <label for="per_page" class="text-sm text-gray-600 ml-2">Exibir</label>
+            <select name="per_page" id="per_page" class="px-2 py-2 border rounded" onchange="this.form.submit()">
+                <option value="5" {% if per_page == 5 %}selected{% endif %}>5</option>
+                <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+            </select>
+            <span class="text-sm text-gray-600 ml-1">por página</span>
+            <button type="submit" class="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600">Buscar</button>
+        </div>
+    </form>
+    <table class="min-w-full bg-white border rounded shadow">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 border-b text-center">Nome</th>
+                <th class="py-2 px-4 border-b text-center">CPF</th>
+                <th class="py-2 px-4 border-b text-center">Email</th>
+                <th class="py-2 px-4 border-b text-center">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for terapeuta in terapeutas %}
+            <tr class="hover:bg-gray-50">
+                <td class="py-2 px-4 border-b text-center">{{ terapeuta.name }}</td>
+                <td class="py-2 px-4 border-b text-center">{{ terapeuta.cpf }}</td>
+                <td class="py-2 px-4 border-b text-center">{{ terapeuta.email }}</td>
+                <td class="py-2 px-4 border-b text-center">
+                    <a href="{% url 'editar_terapeuta' terapeuta.id %}" class="text-indigo-600 hover:underline">Editar</a>
+                    <a href="{% url 'excluir_terapeuta' terapeuta.id %}" class="text-red-600 hover:underline ml-4">Excluir</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center py-4">Nenhum terapeuta cadastrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="flex justify-between items-center mt-6">
+        <div class="text-sm text-gray-600">
+            Exibindo {{ page_obj.start_index }}-{{ page_obj.end_index }} de {{ paginator.count }} terapeutas
+        </div>
+        <div class="flex gap-1">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ query }}&per_page={{ per_page }}&page=1" class="px-2 py-1 border rounded hover:bg-gray-100">« Primeira</a>
+                <a href="?q={{ query }}&per_page={{ per_page }}&page={{ page_obj.previous_page_number }}" class="px-2 py-1 border rounded hover:bg-gray-100">‹ Anterior</a>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                    {% if num == page_obj.number %}
+                        <span class="px-2 py-1 border rounded bg-indigo-600 text-white">{{ num }}</span>
+                    {% else %}
+                        <a href="?q={{ query }}&per_page={{ per_page }}&page={{ num }}" class="px-2 py-1 border rounded hover:bg-gray-100">{{ num }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <a href="?q={{ query }}&per_page={{ per_page }}&page={{ page_obj.next_page_number }}" class="px-2 py-1 border rounded hover:bg-gray-100">Próxima ›</a>
+                <a href="?q={{ query }}&per_page={{ per_page }}&page={{ paginator.num_pages }}" class="px-2 py-1 border rounded hover:bg-gray-100">Última »</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock body %}

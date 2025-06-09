@@ -2,17 +2,27 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.welcome, name="index"),
-    path('pacientes/', views.pacientes, name="patients"),
-    path('pacientes/<int:id>', views.paciente_view, name="patient_view"),
-    path('pacientes/update_patient/<int:id>', views.update_patient, name="update_patient"),
-    path('consultas/delete_consultation/<int:id>', views.delete_consultation, name="delete_consultation"),
-    path('consultas/public_consultation/<int:id>', views.public_consultation, name="public_consultation"),
-    path('terapeutas/cadastrar_terapeuta/', views.cadastrar_terapeuta, name='cadastrar_terapeuta'),
+    # Rotas de autenticação e boas-vindas
     path('login/', views.login_view, name='login'),
-    path('welcome/', views.welcome, name='welcome'),
     path('logout/', views.logout_view, name='logout'),
-    path('pacientes_cadastrados/', views.pacientes_cadastrados, name='pacientes_cadastrados'),
+    path('welcome/', views.welcome, name='welcome'),
+    path('', views.welcome, name="index"),  # Página inicial redireciona para welcome
+
+    # Rotas de pacientes
+    path('pacientes/cadastrar_paciente/', views.cadastrar_paciente, name='cadastrar_paciente'),
+    path('pacientes/visualizar_pacientes/', views.visualizar_pacientes, name='visualizar_pacientes'),
+    path('pacientes/editar/<int:id>/', views.editar_paciente, name='editar_paciente'),
+    path('pacientes/excluir/<int:id>/', views.excluir_paciente, name='excluir_paciente'),
+
+    # Rotas de terapeutas
+    path('terapeutas/cadastrar_terapeuta/', views.cadastrar_terapeuta, name='cadastrar_terapeuta'),
+    path('terapeutas/visualizar_terapeutas/', views.visualizar_terapeutas, name='visualizar_terapeutas'),
+    path('terapeutas/editar/<int:id>/', views.editar_terapeuta, name='editar_terapeuta'),
+    path('terapeutas/excluir/<int:id>/', views.excluir_terapeuta, name='excluir_terapeuta'),
+
+    # Rotas de calendário
+    path('calendario/', views.calendario, name='calendario'),
+    path('calendario/novo/', views.novo_agendamento, name='novo_agendamento'),
 ]
 
-# Nenhuma alteração necessária aqui, pois as views já estão protegidas por login_required.
+# As views sensíveis já estão protegidas por login_required no arquivo de views.
