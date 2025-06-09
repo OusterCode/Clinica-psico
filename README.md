@@ -2,15 +2,18 @@
 
 ## Visão Geral
 
-O Sistema de Gestão é uma aplicação web desenvolvida para facilitar o gerenciamento de uma clínica de psicologia. O sistema permite que psicólogos cadastrem pacientes, registrem consultas, gerenciem tarefas e armazenem dados relevantes de forma eficiente.
+O Sistema de Gestão é uma aplicação web desenvolvida para facilitar o gerenciamento de uma clínica de psicologia. O sistema permite que psicólogos cadastrem pacientes, registrem consultas, gerenciem tarefas, gerenciem terapeutas e armazenem dados relevantes de forma eficiente.
 
 ## Funcionalidades
 
 - **Gestão de Pacientes:** Adicione, atualize e visualize detalhes dos pacientes, incluindo informações de contato, queixas e status de pagamento.
+- **Gestão de Terapeutas:** Cadastre, edite, exclua e visualize terapeutas da clínica.
 - **Registro de Consultas:** Registre consultas com detalhes como avaliação de humor, anotações gerais e vídeos.
 - **Gestão de Tarefas:** Atribua tarefas específicas aos pacientes com opções de frequência pré-definidas.
 - **Visualização de Dados:** Gere gráficos de tendência de humor com base nas consultas anteriores.
 - **Acesso Seguro:** As consultas só ficam acessíveis para pacientes com pagamento em dia.
+- **Autenticação:** Login para acesso ao painel administrativo.
+- **Administração:** Interface administrativa padrão do Django para gerenciamento avançado.
 
 ## Tecnologias Utilizadas
 
@@ -39,6 +42,7 @@ python manage.py runserver
 
 - Acesse `http://127.0.0.1:8000/` para utilizar a interface de gestão de pacientes.
 - Cadastre novos pacientes informando seus dados e foto de perfil.
+- Cadastre e gerencie terapeutas.
 - Registre consultas com avaliação de humor e vídeo.
 - Atribua e gerencie tarefas para cada paciente.
 
@@ -51,6 +55,10 @@ python manage.py runserver
 | `/update_patient/<int:id>`      | POST   | Atualizar status de pagamento do paciente                        |
 | `/delete_consultation/<int:id>` | POST   | Excluir um registro de consulta                                  |
 | `/public_consultation/<int:id>` | GET    | Visualizar consulta pública se o paciente estiver em dia         |
+| `/terapeutas/`                  | GET    | Visualizar todos os terapeutas                                   |
+| `/terapeuta/cadastro/`          | POST   | Cadastrar novo terapeuta                                         |
+| `/terapeuta/editar/<int:id>`    | POST   | Editar dados de um terapeuta                                     |
+| `/terapeuta/excluir/<int:id>`   | POST   | Excluir terapeuta                                                |
 
 ## Observações
 
