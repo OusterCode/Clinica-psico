@@ -85,7 +85,7 @@ DATABASES = {
         'NAME': 'clinica_db',
         'USER': os.environ.get('MYSQL_USER_HERE'),  # Use environment variable for user
         'PASSWORD': os.environ.get('MYSQL_PASSWORD_HERE'),  # Use environment variable for password
-        'HOST': 'clinica_db.mysql.database.azure.com',
+        'HOST': 'clinica.mysql.database.azure.com',
         'PORT': '3306',
     }
 }
