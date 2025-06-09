@@ -1,4 +1,4 @@
-# Sistema de Gestão de Clínica Psicológica
+# Sistema de Gestão de Clínica Psicológica (Psico-clinic)
 
 ## Visão Geral
 
