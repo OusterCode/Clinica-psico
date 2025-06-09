@@ -7,3 +7,4 @@ media
 app_clinica/__pycache__
 app_clinica/migrations
 node_modules
+.psico-manager
