@@ -19,6 +19,10 @@ urlpatterns = [
     path('terapeutas/visualizar_terapeutas/', views.visualizar_terapeutas, name='visualizar_terapeutas'),
     path('terapeutas/editar/<int:id>/', views.editar_terapeuta, name='editar_terapeuta'),
     path('terapeutas/excluir/<int:id>/', views.excluir_terapeuta, name='excluir_terapeuta'),
+
+    # Rotas de calendário
+    path('calendario/', views.calendario, name='calendario'),
+    path('calendario/novo/', views.novo_agendamento, name='novo_agendamento'),
 ]
 
 # As views sensíveis já estão protegidas por login_required no arquivo de views.

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="w-full grow flex flex-col bg-white min-h-[calc(100vh-4rem)]">
+    <div class="flex-none p-8 pb-0 flex flex-wrap items-end gap-8">
+        <div>
+            <h2 class="text-2xl font-bold mb-6 text-indigo-700">Calendário de Agendamentos</h2>
+            <a href="{% url 'novo_agendamento' %}" class="mb-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">+ Novo Agendamento</a>
+        </div>
+        <div class="ml-auto">
+            <button id="configBtn" class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 font-semibold text-sm" type="button">
+                ⚙ Configurações
+            </button>
+        </div>
+    </div>
+    <div id="calendar" class="flex-1 min-h-0"></div>
+</div>
+
+<!-- Modal de Configurações -->
+<div id="configModal" style="display:none;position:fixed;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);z-index:11000;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:8px;box-shadow:0 2px 16px #0002;min-width:320px;max-width:90vw;padding:2em 2em 1.5em 2em;position:relative;">
+        <button id="closeConfig" style="position:absolute;top:8px;right:12px;font-size:1.5em;background:none;border:none;cursor:pointer;z-index:2;" aria-label="Fechar">&times;</button>
+        <h3 class="text-lg font-bold mb-4">Configurações de Agendamento</h3>
+        <form id="configForm">
+            <label class="block mb-2 font-medium">Duração padrão da sessão:</label>
+            <select id="sessionDuration" class="border rounded px-3 py-2 w-full mb-4">
+                <option value="30">30 minutos</option>
+                <option value="45">45 minutos</option>
+                <option value="50">50 minutos</option>
+                <option value="60">60 minutos</option>
+                <option value="90">90 minutos</option>
+            </select>
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Salvar</button>
+        </form>
+    </div>
+</div>
+
+<!-- FullCalendar CSS/JS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var events = JSON.parse('[{% for ag in agendamentos %}{% if not forloop.first %},{% endif %}{"title": "{{ ag.paciente.name|default_if_none:'Sem paciente'|escapejs }} - {{ ag.terapeuta.name|default_if_none:'Sem terapeuta'|escapejs }}", "start": "{{ ag.data|date:'Y-m-d' }}T{{ ag.hora|time:'H:i' }}", "color": "{{ ag.cor|default:'#4285F4' }}", "description": "{{ ag.observacoes|default:''|escapejs }}"}{% endfor %}]');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        height: '100%',
+        initialView: 'timeGridWeek',
+        locale: 'pt-br',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridDay,dayGridMonth,timeGridWeek'
+        },
+        buttonText: {
+            today:    'Hoje',
+            month:    'Mês',
+            week:     'Semana',
+            day:      'Dia',
+            list:     'Lista'
+        },
+        events: events,
+        eventClick: function(info) {
+            var event = info.event;
+            var hora = event.start.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            var content = '<div style="padding:1em;max-width:350px">' +
+                '<h3 style="font-size:1.2em;font-weight:bold;margin-bottom:0.5em">' + event.title + '</h3>' +
+                '<p><b>Data:</b> ' + event.start.toLocaleDateString('pt-BR') + '</p>' +
+                '<p><b>Hora:</b> ' + hora + '</p>' +
+                (event.extendedProps.description ? '<p><b>Observações:</b> ' + event.extendedProps.description + '</p>' : '') +
+                '</div>';
+            var modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.left = 0;
+            modal.style.top = 0;
+            modal.style.width = '100vw';
+            modal.style.height = '100vh';
+            modal.style.background = 'rgba(0,0,0,0.4)';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.zIndex = 10000;
+            modal.innerHTML = '<div style="background:#fff;border-radius:8px;box-shadow:0 2px 16px #0002;position:relative;padding-top:2.5em;">' + content + '<button style="position:absolute;top:8px;right:12px;font-size:1.5em;background:none;border:none;cursor:pointer;z-index:2;" aria-label="Fechar">&times;</button></div>';
+            modal.querySelector('button').onclick = function() { modal.remove(); };
+            modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+            document.body.appendChild(modal);
+        },
+        eventDidMount: function(info) {
+            if (info.event.extendedProps.description) {
+                var tooltip = document.createElement('div');
+                tooltip.innerHTML = info.event.extendedProps.description;
+                info.el.title = info.event.extendedProps.description;
+            }
+        }
+    });
+    calendar.render();
+
+    // Configurações de agendamento
+    var configBtn = document.getElementById('configBtn');
+    var configModal = document.getElementById('configModal');
+    var closeConfig = document.getElementById('closeConfig');
+    var configForm = document.getElementById('configForm');
+    var sessionDuration = document.getElementById('sessionDuration');
+    // Carregar valor salvo do localStorage
+    if (localStorage.getItem('sessionDuration')) {
+        sessionDuration.value = localStorage.getItem('sessionDuration');
+    }
+    configBtn.onclick = function() {
+        configModal.style.display = 'flex';
+    };
+    closeConfig.onclick = function() {
+        configModal.style.display = 'none';
+    };
+    configModal.onclick = function(e) {
+        if (e.target === configModal) configModal.style.display = 'none';
+    };
+    configForm.onsubmit = function(e) {
+        e.preventDefault();
+        localStorage.setItem('sessionDuration', sessionDuration.value);
+        configModal.style.display = 'none';
+    };
+});
+</script>
+{% endblock body %}
+<style>
+#calendar {
+    min-height: 600px;
+    height: 100%;
+}
+html, body {
+    height: 100%;
+}
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+</style>

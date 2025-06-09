@@ -1,5 +1,5 @@
 from django import forms
-from .models import Patients, Therapist
+from .models import Patients, Therapist, Agendamento
 from .utils import is_valid_cpf, is_valid_phone, get_address_by_cep
 from django.core.exceptions import ValidationError
 
@@ -107,3 +107,13 @@ class TherapistForm(AbstractPersonForm):
             'available_days': forms.TextInput(attrs={'class': 'block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none placeholder-gray-400'}),
             'available_times': forms.TextInput(attrs={'class': 'block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none placeholder-gray-400'}),
         })
+
+class AgendamentoForm(forms.ModelForm):
+    class Meta:
+        model = Agendamento
+        fields = ['data', 'hora', 'terapeuta', 'paciente', 'observacoes', 'duracao']
+        widgets = {
+            'data': forms.DateInput(attrs={'type': 'date', 'class': 'form-input'}),
+            'hora': forms.TimeInput(attrs={'type': 'time', 'class': 'form-input'}),
+            'duracao': forms.NumberInput(attrs={'type': 'number', 'class': 'form-input', 'min': 1, 'max': 240, 'step': 5}),
+        }

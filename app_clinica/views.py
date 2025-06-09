@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
-from .models import Patients, Treatment, Therapist
+from .models import Patients, Treatment, Therapist, Agendamento
 from django.contrib import messages
 from django.contrib.messages import constants
-from .forms import PatientForm, TherapistForm
+from .forms import PatientForm, TherapistForm, AgendamentoForm
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.db import models
 from django.core.paginator import Paginator
+from datetime import datetime, timedelta
 
 # =========================
 # Autenticação e Boas-vindas
@@ -189,3 +190,54 @@ def excluir_terapeuta(request, id):
         messages.add_message(request, constants.SUCCESS, 'Terapeuta excluído com sucesso.')
         return redirect('visualizar_terapeutas')
     return render(request, 'terapeuta/excluir_terapeuta.html', {'terapeuta': terapeuta})
+
+# =========================
+# Agendamentos
+# =========================
+
+@login_required
+def calendario(request):
+    agendamentos = Agendamento.objects.select_related('terapeuta', 'paciente').all().order_by('data', 'hora')
+    return render(request, 'agendamentos/calendario.html', {'agendamentos': agendamentos})
+
+@login_required
+def novo_agendamento(request):
+    if request.method == 'POST':
+        form = AgendamentoForm(request.POST)
+        if form.is_valid():
+            agendamento = form.save(commit=False)
+            agendamento.cor = agendamento.terapeuta.cor if hasattr(agendamento.terapeuta, 'cor') else "#4285F4"
+            data = agendamento.data
+            hora_inicio = agendamento.hora
+            duracao = agendamento.duracao or 50
+            dt_inicio = datetime.combine(data, hora_inicio)
+            dt_fim = dt_inicio + timedelta(minutes=duracao)
+
+            # Checagem de sobreposição para terapeuta ou paciente
+            conflitos = Agendamento.objects.filter(
+                data=data
+            ).filter(
+                models.Q(terapeuta=agendamento.terapeuta) | models.Q(paciente=agendamento.paciente)
+            )
+
+            # Se for edição, exclui o próprio agendamento
+            if agendamento.pk:
+                conflitos = conflitos.exclude(pk=agendamento.pk)
+
+            conflito_encontrado = False
+            for c in conflitos:
+                c_duracao = c.duracao if c.duracao else 50
+                c_inicio = datetime.combine(c.data, c.hora)
+                c_fim = c_inicio + timedelta(minutes=c_duracao)
+                if dt_inicio < c_fim and c_inicio < dt_fim:
+                    conflito_encontrado = True
+                    break
+
+            if conflito_encontrado:
+                form.add_error('hora', 'Conflito: já existe um agendamento para este terapeuta ou paciente neste horário.')
+            else:
+                agendamento.save()
+                return redirect('calendario')
+    else:
+        form = AgendamentoForm()
+    return render(request, 'agendamentos/novo_agendamento.html', {'form': form})

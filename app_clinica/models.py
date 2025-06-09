@@ -84,3 +84,15 @@ class Therapist(AbstractPerson):
         if self.photo and hasattr(self.photo, 'url'):
             return self.photo.url
         return '/media/pessoa_logo.jpeg'
+
+class Agendamento(models.Model):
+    data = models.DateField()
+    hora = models.TimeField()
+    terapeuta = models.ForeignKey('Therapist', on_delete=models.CASCADE)
+    paciente = models.ForeignKey('Patients', on_delete=models.CASCADE)
+    observacoes = models.TextField(blank=True)
+    cor = models.CharField(max_length=7, default="#4285F4")  # cor HEX para o terapeuta
+    duracao = models.PositiveIntegerField(default=50, verbose_name='Duração da sessão (minutos)')
+
+    def __str__(self):
+        return f"{self.data} {self.hora} - {self.paciente.name} ({self.terapeuta.name})"

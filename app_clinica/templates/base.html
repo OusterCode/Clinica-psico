@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style>
+        /* Prevent font scaling in landscape orientation or when the browser is resized */
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%; /* Add for Chrome, Edge, Firefox, Safari */
+        }
+    </style>
     {% block head %}{% endblock head %}
 </head>
 <body>
